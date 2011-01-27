@@ -1,0 +1,858 @@
+\documentclass[11pt]{article}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{epstopdf}
+\usepackage{caption}
+\usepackage{amsmath, amsthm} %%%%%%%%%%%%%%% MUST BE ADDED
+\usepackage{supertabular}
+\usepackage{wasysym}
+\usepackage{setspace}
+
+\usepackage{Sweave}
+
+\usepackage{tabularx}
+\newcolumntype{Y}{>{\footnotesize\raggedright\arraybackslash}X}
+
+%\singlespacing
+\onehalfspacing
+%\doublespacing
+
+\usepackage{natbib}
+
+%\usepackage{color}
+%\definecolor{MyDarkGreen}{rgb}{0.0,0.4,0.0}
+%\definecolor{MyDarkRed}{rgb}{0.4,0.0,0.0} 
+%\usepackage[colorlinks=true, urlcolor= MyDarkGreen, linkcolor= MyDarkRed ]{hyperref}
+\usepackage{hyperref}
+
+\DeclareCaptionLabelSeparator{space}
+
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+\textwidth = 6.5 in
+\textheight = 9 in
+\oddsidemargin = 0.0 in
+\evensidemargin = 0.0 in
+\topmargin = 0.0 in
+\headheight = 0.0 in
+\headsep = 0.0 in
+\parskip = 0.2in
+\parindent = 0.0in
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}{Definition}
+
+
+
+\newcommand{\ve}{\varepsilon}
+
+
+
+\newcommand{\wt}{\widetilde}
+\newcommand{\wh}{\widehat}
+\newcommand{\0}{\mathbf{0}}
+
+%\newcommand{\Fv}{\mathbf{F}}
+%\newcommand{\Lv}{\mathbf{L}}
+%\newcommand{\Ev}{\mathbf{E}}
+
+\newcommand{\st}{\mathrm{ \:\: s.t. \:\: }}
+
+\newcommand{\bs}[1]{\boldsymbol{#1}}
+\newcommand{\bm}[1]{\mbox{\boldmath$#1$}}
+\newcommand{\mr}[1]{\mathrm{#1}}
+\newcommand{\mb}[1]{\mathbf{#1}}
+
+\newcommand{\smss}[1]{^{_{#1}}}
+
+\newcommand{\apri}{\smss{\,(-)}}
+\newcommand{\apos}{\smss{\,(+)}}
+
+\newcommand{\betaup}{\rotatebox[origin=c]{12}{$\beta$}}
+
+\newcommand{\ttb}{\hspace{-0.01cm}}
+
+\newcommand{\diag}{\mathsf{diag}}
+\newcommand{\minz}{\mathsf{min}}
+\newcommand{\maxz}{\mathsf{max}}
+\newcommand{\zsin}{\mathsf{sin}}
+\newcommand{\zcos}{\mathsf{cos}}
+
+\newcommand{\SE}{\mathsf{SE}}
+\newcommand{\range}{\mathsf{range}}
+
+\newcommand{\ndxrng}[2]{#1 \,\!\! : \,\!\! #2}
+
+\newenvironment{DZcaption}[2]%
+               {\begin{list}{}{\leftmargin#1\rightmargin#2}\item{}}%
+               {\end{list}}
+
+\begin{document}
+
+%\VignetteIndexEntry{Package SSsimple}
+%\VignetteDepends{mvtnorm}
+%\VignetteDepends{maps}
+
+
+
+\title{Package \texttt{SSsimple}}
+\author{Dave Zes}
+\maketitle
+
+
+\section{Intro}
+Our objective with \texttt{SSsimple} is a lean, easily implemented suite of functions to serve both didactically and as a practical means to perform meaningful analyses on real data.  Our approach here will be mostly deductive.  We will think generally about features of the state space system, and simulate and visualize the resulting manufactured observations.
+
+As an author of this sort of document there is a great temptation to pontificate on the subject matter behind the code; however, this is a tutorial, and I will keep digressions to a minimum.  There exist countless sources detailing theory, history, etc.\ of dynamic systems. For comprehensive treatments, see \citet{Sayed}; \citet{Haykin}; \citet{WestHarrison}.  For brief exposition, consider \citet{SS}; \citet{KalmanAL}.  For mean function estimation (for creation of the soon-to-be-introduced matrix, $\mb{H}$), see \citet{Wasserman}; \citet{Efrom}.
+
+
+
+\section{What's a State Space System?}
+A state space system is an idealized mathematical construct used to describe certain types of action in time (and in potentially other domains, like space).  In particular,
+%
+\begin{align}
+%\xv_t &= \Fv \xv_{t-1}  +   \Lv \zv +  \vev_t       \\[0.08in]
+%\xv_t &= \Fv_t \xv_{t-1}  +  \vev_t       \\[0.08in]
+%\yv_t &=  \Hv_t \xv_t   + \nuv_t  \label{eq:obs}
+\bs{\beta}_{t} &= \mb{F} \bs{\beta}_{t-1} + \bs{\nu}_t  \: , \hspace{1cm} \bs{\nu} \sim \mathcal{N} [ \mb{0}, \mb{Q} ]  \label{eq1} \\
+\mb{z}_{t}^T &= \mb{H} \bs{\beta}_{t} + \bs{\ve}_t  \: , \hspace{1cm} \bs{\ve} \sim \mathcal{N} [ \mb{0}, \mb{R} ]   \label{eq2}
+\end{align}
+%
+%
+The latent state at time $t$, $\bs{\beta}_t$, is $d \times 1$; the system function, $\mb{F}$, and the state variance, $\mb{Q}$, are $d \times d$; the measurement function, $\mb{H}$, is $n \times d$; the measurement variance, $\mb{R}$, is $n \times n$.
+A more general variant allows the system \emph{hyperparameters}, $\mb{F}, \mb{Q}, \mb{H}, \mb{R}$, to be time-varying.  Our general philosophy here is that great volumes of important statistical modeling can be done without this generalization.  There are certainly situations, though, where it will be sensible to allow the measurement function, $\mb{H}$, to be a function of time, or a function of exogenous variables that are themselves functions of time.
+
+<<eval=TRUE, echo=FALSE>>=
+options(width=75)
+@
+
+
+\section{The Temporal Interpretation}
+
+The knee-jerk reaction to (\ref{eq1}) and (\ref{eq2}) is to imagine the observations, $\mb{z}_t$, as being dependent only upon the time domain, the simplest embodiment of which would be a ``random walk,''  attained by setting $H = F = 1$, and $R=0$.
+%
+\subsection{Example, Local Level}
+%
+<<a1, eval=TRUE>>=
+library(SSsimple)
+F <- 1
+H <- matrix(1) ### a 1 x 1 matrix, implying to SS.sim() that n=1 and d=1
+Q <- 1
+R <- 0
+tt <- 1000
+set.seed(999)
+xss <- SS.sim(F=F, Q=Q, H=H, R=R, length.out=tt, beta0=0)
+@
+\begin{minipage}{12cm}
+<<fig=TRUE, width=5, height=5, eval=TRUE, echo=TRUE>>=
+plot( xss$Z, type="l", main="Random Walk, Sim" )
+@
+\end{minipage}
+%
+
+
+
+\subsection{Example, Smiles \& Frowns}
+
+Let us imagine, just for the sake of illustration, we are studying the behavior of a friend.  Our response (the observation) will be measured each minute for 3 hours as the number of smiles minus the number of frowns recorded over the prior minute (SMFPM).  The underlying \emph{state} that gives rise to this observation contains two elements, one we'll call the ``humor index,'' the other we'll call the ``happiness index.''  We decide that the response is deterministically equal 0.4 times the humor index plus 0.3 times the happiness index.  We furthermore suppose that the magnitude of the states at any minute is in part a deterministic admixture of the magnitude of the two states during the prior minute, say the happiness index at time $t$ equals 0.65 times the happiness index at $t-1$ plus 0.3 times the humor index at $t-1$, and analogously, the humor index at time $t$ equals 0.65 times the humor index at $t-1$ plus 0.3 times the happiness index at $t-1$.  FInally suppose that at each minute the response has a zero-mean gaussian stochastic component with variance $5$, and the state possesses a zero-mean stochastic component with covariance $\diag[ (0.2, 0.2) ]$.
+
+Let's simulate such a system:
+%
+<<a2, eval=TRUE>>=
+F <- matrix( c( 0.65, 0.3, 0.3, 0.65 ), 2, 2 ) ;
+H <- matrix( c(0.4, 0.3), 1, 2 ) ### a 1 x 2 matrix, so SS.sim() knows n=1 and d=2 ;
+Q <- 0.2 ;
+R <- 5 ;
+tt <- 180 ;
+set.seed(999) ;
+xss <- SS.sim(F=F, Q=Q, H=H, R=R, length.out=tt, beta0=0) ;
+@
+\begin{minipage}{12cm}
+<<fig=TRUE, width=5, height=5, eval=TRUE>>=
+plot( xss$Z, type="l", main="SPM minus FPM, Sim" )
+@
+\end{minipage}
+
+ 
+
+Let's now use known hyperparameter values to produce posterior estimates of the true latent states:
+%
+%
+<<a3, eval=TRUE>>=
+P0 <- diag(Q, 2) %*% solve(diag(1, 2) - t(F) %*% F)
+xslv <- SS.solve(Z=xss$Z, F=F, Q=Q, H=H, R=R, length.out=tt, P0=P0, beta0=0)
+Z.hat <- t(H %*% t(xslv$B.apri))
+sqrt( mean( (xss$Z - Z.hat)^2 ) )
+@
+
+<<eval=TRUE, echo=FALSE>>=
+options(width=55)
+@
+
+\begin{minipage}{20cm}
+<<fig=TRUE, width=10, height=5, eval=TRUE>>=
+par( mfrow=c(1,2) )
+plot(xss$Beta[ , 1], type="l", ylim=range(xss$Beta), col="red", 
+   ylab="Humor Index (True is Heavy Line)", 
+   main="Humor: True State and Posterior Est State", lwd=4)
+points(xslv$B.apos[ , 1], type="l", ylim=range(xslv$B.apos), col="red")
+plot(xss$Beta[ , 2], type="l", ylim=range(xss$Beta), col="blue", 
+   ylab="Happiness Index (True is Heavy Line)", 
+   main="Happiness: True State and Posterior Est State", lwd=4)
+points(xslv$B.apos[ , 2], type="l", ylim=range(xslv$B.apos), col="blue")
+@
+\end{minipage}
+
+
+
+%%%%%%%%%%%%%%%%%%
+ID system.
+%
+<<a4, eval=TRUE>>=
+xid <- SS.ID( xss$Z, d=2 )
+xslv <- SS.solve(Z=xss$Z, F=xid$F, Q=xid$Q, H=xid$H, R=xid$R, 
+   length.out=tt, P0=P0, beta0=0)
+Z.hat.2 <- t(xid$H %*% t(xslv$B.apri))
+sqrt( mean( (xss$Z - Z.hat.2)^2 ) )
+@
+\begin{minipage}{20cm}
+<<fig=TRUE, width=10, height=5, eval=TRUE>>=
+par( mfrow=c(1,2) )
+plot( xss$Z, type="l", main="SPM - FPM, Prior Est Gold, True Hypers", lwd=3 )
+points( Z.hat, type="l", lwd=3, col="gold" )
+plot( xss$Z, type="l", main="SPM - FPM, Prior Est Gold, IDed Hypers", lwd=3 )
+points( Z.hat.2, type="l", lwd=3, col="gold" )
+@
+\end{minipage}
+
+
+\subsection{Example, Smiles \& Frowns again, with Visual Stimulous}
+
+Let's now add an exogenous variable to our model of our friend's SMFPM.  From minute 60 to minute 90, we are going to play for our friend choice excerpts from the delightful, though very dark Belgian comedy, \emph{Man Bites Dog}.  From minute 120 to minute 150, we shall deliberately assail our friend with excepts from the television catastrophe, \emph{Full House}.
+
+We will add the effect of this visual stimulation into the \emph{observation space}, i.e., build it into (\ref{eq2}), more precisely, we shall insert it into $\mb{H}_t$.  Our model assumption will be that the comedy will have a purely deterministic mean effect of $+9$ SMFPM, and \emph{Full House}, $-9$.  The effect of these stimuli will also be manifest through a state variable, ``receptivity,'' that is independent (both through $\mb{F}$ and $\mb{Q}$) of the other states, with a variance of $0.01$, a system coefficient of $0.99$, and a mapping into the observation space of unity.
+%
+%
+<<a5, eval=TRUE>>=
+d <- 4
+n <- 1
+F <- matrix(0, d, d)
+F[ 1:2, 1:2 ] <- c(0.65, 0.3, 0.3, 0.65)
+F[ 3, 3 ] <- 1
+F[ 4, 4 ] <- 0.99
+eigen(F) #### check stability
+tt <- 180
+
+H.tv <- list()
+for(i in 1:tt) {
+   H.tv[[i]] <- matrix( c(0.4, 0.3, 0, 1), n, d )
+   if( i >= 60 & i < 90 ) { H.tv[[i]][ , 3] <- 9 }
+   if( i >= 120 & i < 150 ) { H.tv[[i]][ , 3] <- -9 }
+}
+	
+Q <- diag( 0.2, d )
+Q[ 3, 3 ] <- 0
+Q[ 4, 4 ] <- 1/100
+R <- 5
+
+beta0 <- c(0, 0, 1, 0)
+
+set.seed(999)
+xss <- SS.sim.tv(F=F, Q=Q, H=H.tv, R=R, length.out=tt, beta0=beta0)
+@
+\begin{minipage}{12cm}
+<<fig=TRUE, width=5, height=5, eval=TRUE>>=
+plot( xss$Z, type="l", main="SPM minus FPM, with Video, Sim" ) ;
+abline(v=60, col="orange", lwd=2) ;
+abline(v=91, col="orange", lwd=2) ;
+abline(v=120, col="blue", lwd=2) ;
+abline(v=151, col="blue", lwd=2)
+@
+\end{minipage}
+
+
+
+
+
+\section{The Spacio-Temporal Interpretation}
+
+We can use our system, (\ref{eq1})-(\ref{eq2}), to describe spacio-temporal phenomenon by making two key connections.  First, we will call upon $\mb{H}$ to help define a smooth mean function over space, second, we'll have $\mb{R}$ describe covariance as a function of distance between spacial locations.
+
+
+\subsection{Example, ST over 1D}
+
+Let's say our spacial domain $\Omega = [0,1] \subset \mathbb{R}^1$, and have 21 sites evenly spaced over $\Omega$.
+
+<<a6, eval=TRUE>>=
+x <- I(0:20) / 20
+n <- length(x)
+H <- H.omega.sincos(x, c(1,2))
+F <- 0.999 ; Q <- 0.1
+## the following line constructs the matrix of Euclidean distances btwn locations
+D <- abs( tcrossprod(x, rep(1, n)) - tcrossprod(rep(1, n), x) )
+R <- exp(-3 * D)
+
+set.seed(999)
+xss <- SS.sim(F=F, Q=Q, H=H, R=R, length.out=100, beta0=0)
+
+xdom <- I(0:100) / 100
+Hdom <- H.omega.sincos(xdom, c(1,2))
+@
+
+<<a7, eval=FALSE>>=
+for(i in 1:tt) {
+   plot(x, xss$Z[i, ], ylim=range(xss$Z), main=i)
+   points( xdom, Hdom %*% xss$Beta[i,], type="l" )
+   Sys.sleep(0.1)
+}
+@
+\begin{minipage}{12cm}
+<<fig=TRUE, width=5, height=5, eval=TRUE, echo=FALSE>>=
+i <- 100
+   plot(x, xss$Z[i, ], ylim=range(xss$Z), main=i)
+   points( xdom, Hdom %*% xss$Beta[i,], type="l" )
+@
+\end{minipage}
+
+
+
+
+
+
+\subsection{Example, ST over 2D}
+
+Here we'll simulate a system over $\Omega = [0,1] \times [0,1] \subset \mathbb{R}^2$ and have our locations be an evenly spaced 11 by 11 grid.  We will also use true state values to create a raster map of (posterior) spacial predictions.  Recall the best $L2$ estimate of a response at a new location comes by way of
+%
+\begin{align}
+\wh{\mb{z}}_t = \mb{H} \: \bs{\beta}_t \\
+\wh{z}_{0 \: t} = \mb{h}_0  \: \bs{\beta}_t \\
+\widetilde{{z}}_{0 \: t} = \wh{z}_{0 \: t}   +  \left(\mb{z}_t - \wh{\mb{z}}_t\right) \: \mb{R} \: \mb{r}_0 
+\end{align}
+%
+where $\mb{h}_0$ is the $1 \times d$ bases expansion at the new location (naturally, this expansion should always be the same as that used to create $\mb{H}$), and $\mb{r}_0$ is the $n \times 1$ covariance between the new location and the existing locations (and, naturally, this covariance should be created in the same vein as $\mb{R}$).
+
+
+<<a10, eval=TRUE>>=
+x <- rep( 0:10 / 10, 11 )
+y <- rep( 0:10 / 10, each=11 )
+n <- length(x)
+
+Hx <- H.omega.sincos( x, c(1,2,3)*pi / 2 )
+Hy <- H.omega.sincos( y, c(1,2,3)*pi / 2 )
+
+## Construct the tensor bases expansion over Omega
+H <- matrix(NA, nrow(Hx), ncol(Hx)*ncol(Hy))
+k <- 0
+for(i in 1:ncol(Hx)) {
+   for(j in 1:ncol(Hy)) {
+      k <- k+1
+      H[ , k]  <- Hx[ ,i ] * Hy[ , j]
+   }
+}
+
+Dx <- tcrossprod(x, rep(1, n)) - tcrossprod(rep(1, n), x)
+Dy <- tcrossprod(y, rep(1, n)) - tcrossprod(rep(1, n), y)
+D <- sqrt( Dx^2 + Dy^2 ) ; ## the Euclidean distance matrix
+R <- exp(-3 * D)
+
+xss <- SS.sim( 0.99, H, 1/2, R,   500, rep(0, ncol(H)) )
+@
+
+<<a11, eval=FALSE>>=
+for(i in 1:nrow(xss$Z)) {
+   plot(x, y, cex=(xss$Z[i ,]-min(xss$Z))/30, main=i)
+   Sys.sleep(0.1)
+}
+@
+\begin{minipage}{12cm}
+<<fig=TRUE, width=5, height=5, eval=TRUE, echo=FALSE>>=
+i <- 100
+plot(x, y, cex=(xss$Z[i ,]-min(xss$Z))/30, main=i) ;
+@
+\end{minipage}
+
+
+<<a12, eval=TRUE>>=
+#################### raster map, interpolation to arb locs
+x.grid <- 0:100 / 100
+y.grid <- 0:100 / 100
+xdom <- rep( x.grid, length(y.grid) )
+ydom <- rep( y.grid, each=length(x.grid) )
+
+Hx.dom <- H.omega.sincos( xdom, c(1,2,3)*pi / 2 )
+Hy.dom <- H.omega.sincos( ydom, c(1,2,3)*pi / 2 )
+
+Hdom <- matrix(NA, nrow(Hx.dom), ncol(Hx.dom)*ncol(Hy.dom))
+k <- 0
+for(i in 1:ncol(Hx.dom)) {
+   for(j in 1:ncol(Hy.dom)) {
+      k <- k+1
+      Hdom[ , k]  <- Hx.dom[ ,i ] * Hy.dom[ , j]
+   }
+}
+
+Dx.dom <- tcrossprod(x, rep(1, length(xdom))) - tcrossprod(rep(1, n), xdom)
+Dy.dom <- tcrossprod(y, rep(1, length(ydom))) - tcrossprod(rep(1, n), ydom)
+D.dom <- sqrt( Dx.dom^2 + Dy.dom^2 )
+R0 <- exp(-3 * D.dom)
+bb <- solve(R) %*% R0
+@
+<<a13, eval=FALSE>>=
+for(i in 1:nrow(xss$Z)) {
+   z.hat <- H %*% xss$Beta[i, ]
+   z.0 <- Hdom %*% xss$Beta[i, ]
+   z.tilde <- z.0 + t( t(xss$Z[i, ] - z.hat) %*% bb )
+   Z.mx <- matrix( z.tilde, length(y.grid), length(x.grid) )
+   image(x.grid, y.grid, Z.mx, zlim=range(xss$Z), main=i, col=heat.colors(10000))
+   points(x, y, cex=(xss$Z[i ,]-min(xss$Z))/30)
+   Sys.sleep(0.1)
+}
+@
+<<myFigX3, echo=FALSE, results=hide>>=
+png("myFigX3.png")
+i <- 100
+z.hat <- H %*% xss$Beta[i, ]
+z.0 <- Hdom %*% xss$Beta[i, ]
+z.tilde <- z.0 + t( t(xss$Z[i, ] - z.hat) %*% bb )
+Z.mx <- matrix( z.tilde, length(y.grid), length(x.grid) )
+image(x.grid, y.grid, Z.mx, zlim=range(xss$Z), main=i, col=heat.colors(10000))
+points(x, y, cex=(xss$Z[i ,]-min(xss$Z))/30)
+dev.off()
+@
+\includegraphics[width=11cm]{myFigX3}
+
+
+
+
+
+
+
+
+
+
+
+
+
+\subsection{Ozone}
+
+Here we'll use recorded ozone concentrations (ppb) from 68 sites, measured daily form 2005-2006 as the greatest hourly average.
+
+Download data and view:
+%
+%
+<<eval=TRUE, echo=FALSE>>=
+library(maps)
+@
+
+
+<<a14, eval=TRUE>>=
+## library(maps)
+locs <- read.table( "http://www.stat.ucla.edu/~davezes/code_and_data/locs.tsv", 
+   sep="\t", stringsAsFactors=FALSE )
+Z <- read.table( "http://www.stat.ucla.edu/~davezes/code_and_data/O3.tsv", 
+   sep="\t", stringsAsFactors=FALSE )
+xdate <- row.names(Z)
+x <- locs[ ,1]
+y <- locs[ ,2]
+Z <- as.matrix(Z)
+tt <- nrow(Z)
+n <- ncol(Z)
+Dx <- tcrossprod(x, rep(1, n)) - tcrossprod(rep(1, n), x)
+Dy <- tcrossprod(y, rep(1, n)) - tcrossprod(rep(1, n), y)
+D <- sqrt( Dx^2 + Dy^2 )
+@
+<<a15, eval=FALSE>>=
+for(i in 1:tt) {
+	plot(x, y, cex=(Z[i ,]-min(Z))/30, main=xdate[i])
+##	map("state", "california", add=TRUE)
+	Sys.sleep(1/5)
+}
+@
+\begin{minipage}{12cm}
+<<fig=TRUE, width=5, height=5, eval=TRUE, echo=FALSE>>=
+i <- 600
+plot(x, y, cex=(Z[i ,]-min(Z))/30, main=xdate[i])
+map("state", "california", add=TRUE)
+@
+\end{minipage}
+
+
+
+
+
+Assume a random walk model, check \emph{a prior} RMSE.  (Note: Only assess RMSE fit with the \emph{a priori} state estimates; it is meaningless to fit in this way with the \emph{a posteriori} state estimates.)
+%
+<<a16, eval=TRUE>>=
+Q <- 1
+F <- 1
+R <- 1
+H <- matrix( 1, n, 1 )
+
+xslv <- SS.solve(Z=Z, F=F, Q=Q, H=H, R=R, length.out=tt, P0=10^5, beta0=0)
+
+Z.hat <- t(H %*% t(xslv$B.apri))
+sqrt( mean( ( Z - Z.hat )[10:tt, ]^2 ) )
+@
+%
+%
+Note that our RMSE here is $15.72$.
+
+
+
+
+
+Now let's try an additive sine-cosine expansion over California.  We will also utilize an exponential covariance function.
+
+
+<<a17, eval=TRUE>>=
+ux <- I(1:3)*pi / 20
+uy <- I(1:3)*pi / 20
+Hx <- H.omega.sincos( x, ux )
+Hy <- H.omega.sincos( y, uy )
+H <- cbind( rep(1,n), Hx, Hy )
+R <- exp( -0.11 * D )
+Q <- 1
+F <- 1
+
+xslv <- SS.solve(Z=Z, F=F, Q=Q, H=H, R=R, length.out=tt, P0=10^5, beta0=0)
+
+Z.hat <- t(H %*% t(xslv$B.apri))
+sqrt( mean( ( Z - Z.hat )[10:tt, ]^2 ) )
+@
+
+
+We've improved our RMSE to $13.38$.
+
+Plot spacial predictions:
+
+
+<<a18, eval=TRUE>>=
+x.grid <- seq( min(x)-0.5, max(x)+0.5, length=100 )
+y.grid <- seq( min(y)-0.5, max(y)+0.5, length=100 )
+xdom <- rep( x.grid, length(y.grid) )
+ydom <- rep( y.grid, each=length(x.grid) )
+Hx.dom <- H.omega.sincos( xdom, ux )
+Hy.dom <- H.omega.sincos( ydom, uy )
+Hdom <- cbind( rep(1, length(xdom)), Hx.dom, Hy.dom )
+@
+<<a19, eval=FALSE>>=
+for(i in 1:nrow(Z)) {
+   Z.mx <- matrix( Hdom %*% xslv$B.apri[i, ], length(y.grid), length(x.grid) )
+   image(x.grid, y.grid, Z.mx, zlim=range(Z), main=xdate[i], col=heat.colors(10000))
+   points(x, y, cex=(Z[i ,]-min(Z))/30)
+   map("state", "california", add=TRUE)
+   Sys.sleep(0.1)
+}
+@
+<<myFigX4, echo=FALSE, results=hide>>=
+png("myFigX4.png")
+i=600
+Z.mx <- matrix( Hdom %*% xslv$B.apri[i, ], length(y.grid), length(x.grid) )
+image(x.grid, y.grid, Z.mx, zlim=range(Z), main=xdate[i], col=heat.colors(10000))
+points(x, y, cex=(Z[i ,]-min(Z))/30)
+map("state", "california", add=TRUE)
+dev.off()
+@
+\includegraphics[width=11cm]{myFigX4}
+
+
+Let's try a bases tensor expansion over California using the same frequencies and plot spacial predictions:
+
+
+<<a20, eval=TRUE>>=
+####################### tensor bases
+H <- matrix(NA, nrow(Hx), ncol(Hx)*ncol(Hy))
+k <- 0
+for(i in 1:ncol(Hx)) {
+   for(j in 1:ncol(Hy)) {
+      k <- k+1
+      H[ , k]  <- Hx[ ,i ] * Hy[ , j]
+   }
+}
+H <- cbind( rep(1,n), H ) ### add intercept
+R <- exp( -0.11 * D )
+Q <- 1
+F <- 1
+
+xslv <- SS.solve(Z=Z, F=F, Q=Q, H=H, R=R, length.out=tt, P0=10^5, beta0=0)
+
+Z.hat <- t(H %*% t(xslv$B.apri))
+sqrt( mean( ( Z - Z.hat )[10:tt, ]^2 ) )
+
+####### new sites
+Hdom <- matrix(NA, nrow(Hx.dom), ncol(Hx.dom)*ncol(Hy.dom))
+k <- 0
+for(i in 1:ncol(Hx.dom)) {
+   for(j in 1:ncol(Hy.dom)) {
+      k <- k+1
+      Hdom[ , k]  <- Hx.dom[ ,i ] * Hy.dom[ , j]
+   }
+}
+Hdom <- cbind( rep(1, length(xdom)), Hdom )
+@
+<<a21, eval=FALSE>>=
+for(i in 1:nrow(Z)) { ;
+   Z.mx <- matrix( Hdom %*% xslv$B.apri[i, ], length(y.grid), length(x.grid) ) ;
+   image(x.grid, y.grid, Z.mx, zlim=range(Z), main=xdate[i], col=heat.colors(10000)) ;
+   points(x, y, cex=(Z[i ,]-min(Z))/30) ;
+   map("state", "california", add=TRUE) ;
+   Sys.sleep(0.1) ;
+}
+@
+<<myFigX2, echo=FALSE, results=hide>>=
+png("myFigX2.png")
+i=600
+Z.mx <- matrix( Hdom %*% xslv$B.apri[i, ], length(y.grid), length(x.grid) )
+image(x.grid, y.grid, Z.mx, zlim=range(Z), main=xdate[i], col=heat.colors(10000))
+points(x, y, cex=(Z[i ,]-min(Z))/30)
+map("state", "california", add=TRUE)
+dev.off()
+@
+\includegraphics[width=11cm]{myFigX2}
+
+
+
+Our RMSE has dropped to $12.90766$, but exceedingly poor spacial predictions residing ``outside'' our inferential space are plainly evident.
+
+
+Let's now consider a tessellation-style model that can be implied by setting $\mb{H} = \mb{I}$, and view in higher resolution:
+
+
+<<a22, eval=TRUE>>=
+H <- diag(1, n)
+R <- diag(1, n)
+d <- ncol(H)
+F <- diag(1, d)
+Q <- 1
+
+xslv <- SS.solve(Z=Z, F=F, Q=Q, H=H, R=R, length.out=tt, P0=10^5, beta0=0)
+
+Z.hat <- t(H %*% t(xslv$B.apri))
+sqrt( mean( ( Z - Z.hat )[10:tt, ]^2 ) )
+
+x.grid <- seq( min(x)-0.5, max(x)+0.5, length=300 )
+y.grid <- seq( min(y)-0.5, max(y)+0.5, length=300 )
+xdom <- rep( x.grid, length(y.grid) )
+ydom <- rep( y.grid, each=length(x.grid) )
+
+Dx.dom <- tcrossprod(x, rep(1, length(xdom))) - tcrossprod(rep(1, n), xdom)
+Dy.dom <- tcrossprod(y, rep(1, length(ydom))) - tcrossprod(rep(1, n), ydom)
+D.dom <- t(  sqrt( Dx.dom^2 + Dy.dom^2 )  )
+xmin <- apply(D.dom, 1, min)
+xmin.mx <- matrix( xmin, nrow(D.dom), ncol(D.dom) )
+Hdom <- matrix( as.integer( D.dom == xmin.mx ), nrow(D.dom), ncol(D.dom) )
+rm( Dx.dom, Dy.dom, D.dom )
+@
+<<a23, eval=FALSE>>=
+for(i in 1:nrow(Z)) {
+   Z.mx <- matrix( Hdom %*% xslv$B.apri[i, ], length(y.grid), length(x.grid) )
+   image(x.grid, y.grid, Z.mx, zlim=range(Z), main=xdate[i], col=heat.colors(10000))
+   points(x, y, cex=(Z[i ,]-min(Z))/30)
+   map("state", "california", add=TRUE)
+   Sys.sleep(0.1)
+}
+@
+<<myFigX1, echo=FALSE, results=hide>>=
+png("myFigX1.png")
+i <- 600
+Z.mx <- matrix( Hdom %*% xslv$B.apri[i, ], length(y.grid), length(x.grid) )
+image(x.grid, y.grid, Z.mx, zlim=range(Z), main=xdate[i], col=heat.colors(10000))
+points(x, y, cex=(Z[i ,]-min(Z))/30)
+map("state", "california", add=TRUE)
+dev.off()
+@
+\includegraphics[width=11cm]{myFigX1}
+
+
+Our RMSE looks much improved at $10.25$.
+
+Let's ID the system.  Of course, our model assumptions are absurd (ozone concentrations are heavy right-skewed).
+
+
+<<a24, eval=TRUE>>=
+xid <- SS.ID( Z + rnorm(tt*ncol(Z), 0, 0.1) , d=7, rsN <- c(3, 3, 350) ) ;
+xslv <- SS.solve(Z=Z, F=xid$F, Q=xid$Q, H=xid$H, R=xid$R, length.out=tt, 
+   P0=10^5, beta0=0) ;
+Z.hat <- t(xid$H %*% t(xslv$B.apri)) ;
+sqrt( mean( ( Z - Z.hat )[10:tt, ]^2 ) )
+@
+
+
+The RMSE is $10.42$.  Of course, when we ID the system, we find the observation function, $\mb{H}$, for the data.  We cannot immediately use the IDed $\mb{H}$ to predict to new locations because it is \emph{per se} not in a functional form we can use to extrapolate to unmonitored sites.
+
+
+
+\subsection{More O3}
+
+Let's examine a few more examples with the O3 data.  Load and construct Euclidean distance matrix:
+%
+<<a25, eval=TRUE>>=
+locs <- read.table( "http://www.stat.ucla.edu/~davezes/code_and_data/locs.tsv", 
+   sep="\t", stringsAsFactors=FALSE )
+Z <- read.table( "http://www.stat.ucla.edu/~davezes/code_and_data/O3.tsv", 
+   sep="\t", stringsAsFactors=FALSE )
+xdate <- row.names(Z)
+x <- locs[ ,1]
+y <- locs[ ,2]
+Z <- as.matrix(Z)
+tt <- nrow(Z)
+n <- ncol(Z)
+Dx <- tcrossprod(x, rep(1, n)) - tcrossprod(rep(1, n), x)
+Dy <- tcrossprod(y, rep(1, n)) - tcrossprod(rep(1, n), y)
+D <- sqrt( Dx^2 + Dy^2 )
+@
+
+
+Now, let's assume a very simple system with $Q=F=1$ and $\mb{H} = (1,1,...,1)^T$, (i.e., the measurement function is the mean function), and $\mb{R} = \exp[-\alpha \cdot \mb{D} ]$ ($\mb{D}$ is our Euclidean distance matrix between our 68 sites), and utilize \emph{a posteriori} RMSE over cross validation to locate a suitable $\alpha$.
+
+<<a26a, eval=TRUE, echo=FALSE>>=
+options(width=75)
+@
+<<a26, eval=TRUE>>=
+d <- 1
+H <- matrix(1, n, d)
+F <- 1
+Q <- 1
+@
+<<a27, eval=FALSE>>=
+for( alpha in I(2^(-5:4)) ) { ; #### this will take a while ...
+   Z.tilde <- matrix(NA, tt, n)
+   R <- exp( -alpha*D )
+   for( ii in 1:n ) {
+      cat(ii, " ")
+      bb <- solve( R[ -ii, -ii] ) %*% R[ -ii, ii]
+      xslv <- SS.solve(Z[ , -ii], F=F, Q=Q, H=H[-ii, , drop=FALSE], 
+         R=R[ -ii, -ii], length.out=tt, P0=10^5, beta0=0)
+      Z.hat <- t(  H[-ii, , drop=FALSE] %*% t(xslv$B.apos)  )
+      z.0 <- H[ ii, , drop=FALSE ] %*% t(xslv$B.apos)
+      cov.adj <- (Z[ , -ii] - Z.hat) %*% bb
+      z.tilde <- t(z.0) + cov.adj
+      Z.tilde[ , ii] <- z.tilde[ , 1]
+   } ;
+   rmse <- sqrt( mean( ( Z - Z.tilde )[10:tt, ]^2 ) )
+   cat( alpha, rmse, "\n" )
+}
+@
+
+It looks as if $\alpha=1$ is a decent retrospective choice.  Let's use this value to predict in space:
+
+<<a28, eval=TRUE>>=
+alpha <- 1
+R <- exp( -alpha*D )
+
+xslv <- SS.solve(Z=Z, F=F, Q=Q, H=H, R=R, length.out=tt, P0=10^5, beta0=0)
+
+x.grid <- seq( min(x)-0.5, max(x)+0.5, length=100 )
+y.grid <- seq( min(y)-0.5, max(y)+0.5, length=100 )
+xdom <- rep( x.grid, length(y.grid) )
+ydom <- rep( y.grid, each=length(x.grid) )
+
+Dx.dom <- tcrossprod(x, rep(1, length(xdom))) - tcrossprod(rep(1, n), xdom)
+Dy.dom <- tcrossprod(y, rep(1, length(ydom))) - tcrossprod(rep(1, n), ydom)
+D.dom <- t(  sqrt( Dx.dom^2 + Dy.dom^2 )  )
+
+R0 <- exp(-alpha*D.dom)
+bb <- solve(R) %*% t(R0)
+
+Hdom <- matrix(1, length(xdom), 1)
+@
+<<a29, eval=FALSE>>=
+for(i in 1:nrow(Z)) {
+   z.hat <- H %*% xslv$B.apos[i, ]
+   z.0 <- Hdom %*% xslv$B.apos[i, ]
+   z.tilde <- z.0 + t( t(Z[i, ] - z.hat) %*% bb )
+   Z.mx <- matrix( z.tilde, length(y.grid), length(x.grid) )
+   image(x.grid, y.grid, Z.mx, zlim=range(Z), main=xdate[i], col=heat.colors(10000))
+   points(x, y, cex=(Z[i ,]-min(Z))/30)
+   map("state", "california", add=TRUE)
+   Sys.sleep(0.1)
+}
+@
+<<myFigX, echo=FALSE, results=hide>>=
+png("myFigX.png")
+i <- 600
+z.hat <- H %*% xslv$B.apos[i, ]
+z.0 <- Hdom %*% xslv$B.apos[i, ]
+z.tilde <- z.0 + t( t(Z[i, ] - z.hat) %*% bb )
+Z.mx <- matrix( z.tilde, length(y.grid), length(x.grid) )
+image(x.grid, y.grid, Z.mx, zlim=range(Z), main=xdate[i], col=heat.colors(10000))
+points(x, y, cex=(Z[i ,]-min(Z))/30)
+map("state", "california", add=TRUE)
+dev.off()
+@
+\includegraphics[width=11cm]{myFigX}
+
+
+\section{Final Thoughts}
+
+The system of attention, (\ref{eq1}) and (\ref{eq2}), should be regarded as remarkably flexible, and can spawn in one's imagination countless potential applications.
+
+
+
+When fitting to data, as a starting point consider setting $\mb{Q} = \mb{F} = \mb{I}$, have $\mb{H}$ be some function over important exogenous covariates, and have $\mb{R}$ reflect covariance in the response attributable to those exogenous variables.  Recall that $\{ \mb{Q}, \mb{R} \}$ forms a (sort of) equivalence class of solutions, e.g., the solution, $\wh{\mb{Z}}$ or $\widetilde{\mb{Z}}$, of a system with $\mb{Q} = 1 \cdot \mb{I}, \mb{R} = 5 \cdot \mb{I}$ will be identical to that created using $\mb{Q} = 3 \cdot \mb{I}, \mb{R} = 15 \cdot \mb{I}$.
+
+If desiring a good quality \emph{a posteriori} estimate, do not judge a fit using a measure of distance (e.g., RMSE) between the observations and the \emph{a posteriori} estimate using a solution made from the full data.  Instead, use (leave-one-site-out-at-a-time) cross validation (just as we've done in the example above).
+
+%We are always welcome to call to our campaign of system fitting and solving the vast 
+
+
+%\bibliographystyle{plainnat}
+
+\bibliographystyle{jes}
+
+\bibliography{SSsimple}
+
+
+
+
+ \end{document}
+
+
+
+
+
+
+
+\begin{align}
+&( \mbox{ We know } \xv_t \: \: )    \nonumber \\[0.1in]
+\betav_{t} &= \Lxx_{\: t-1}^{-1}  \: \:  \lxy_{\: t-1}   \label{eq:beta}      \\[0.1in]
+\wh{y}_t &=  \xv_t  \: \: \betav_{t}   \label{eq:yhat}       \\[0.1in]
+&( \mbox{ Event, $y_t$, Occurs } )   \nonumber  \\[0.1in]
+\ve_t^2 &= ( y_t - \wh{y}_t )^2    \label{eq:error}       \\[0.1in]
+&( \mbox{ Calculate gain, } \Kv, \kv \: \: )   \nonumber  \\[0.1in]
+\Lxx_{\: t} &= \Lxx_{\: t-1}    +  \Kv  \cdot  \left(  \xv_t^T \xv_t  - \Lxx_{\: t-1}  \right)     \label{eq:Lxx}         \\[0.1in]
+\lxy_{\: t} &= \lxy_{\: t-1}    +  \kv  \cdot  \left(  \xv_t^T y_t  - \lxy_{\: t-1}  \right)    \label{eq:Lxy}     
+\end{align}
+
+
+
+
+
+
+
+
+What we've done so far is discuss a tool for estimating a longitudinal variable.  Statisticians are more enchanted by problems involving the correlation between two or more variables.  Consider the classic linear regression setup, but here, in a longitudinal framework:
+%
+%
+\begin{align} \label{eq:LS}
+y_t &=  \xv_t \betav_t   + \vev_t
+\end{align}
+%
+%
+%To be in a familiar setting, we must change notation. From here on out: $\xv$, a $1 \times d$ row vector is not a latent state; it's just a row of data, a vector of regressors for $y$.
+
+Notice the similarity between (\ref{eq:LS}) and (\ref{eq:obs}), reprinted here:
+%
+%
+\begin{align*} 
+y_t =  \xv_t \betav_t   + \vev_t \:,  \hspace{0.5in}
+\yv_t =  \Hv \xv_t   + \nuv_t
+\end{align*}
+%
+
+
+
+
+
+
+
+
