@@ -1,14 +1,14 @@
-\name{SS.sim}
-\alias{SS.sim}
+\name{SS.sim.chol}
+\alias{SS.sim.chol}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Simulation
 }
 \description{
-Simulate a state space system
+Simulate a state space system by supplying measurement variance Cholesky decomposition
 }
 \usage{
-SS.sim(F, H, Q, R, length.out, beta0=0)
+SS.sim.chol(F, H, Q, R.chol, length.out, beta0=0)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -21,8 +21,8 @@ The measurement matrix.  Must be \emph{n} x \emph{d}.
   \item{Q}{
 The state variance.  A scalar, or vector of length \emph{d}, or a \emph{d} x \emph{d} matrix.  When scalar, \code{Q} is constant diagonal.  When a vector, \code{Q} is diagonal.
 }
-  \item{R}{
-The measurement variance.  A scalar, or vector of length \emph{n}, or an \emph{n} x \emph{n} matrix.  When scalar, \code{R} is constant diagonal.  When a vector, \code{R} is diagonal.
+  \item{R.chol}{
+The Cholesky decomposition of the measurement variance (must possess pivot), must be \emph{n} x \emph{n}.
 }
   \item{length.out}{
 Scalar integer.
@@ -33,6 +33,7 @@ Initial state value.  A scalar, or a vector of length \emph{d}.
 }
 \details{
 \code{H} is the master argument from which system dimensionality is determined.
+    Spiritually identical to \code{\link{SS.sim}}.  This method can be used to speed up simulating multiple systems with the same parameterization.
 }
 \value{
 A named list.
@@ -65,7 +66,10 @@ x <- I( 0:10 / 10 )
 
 H <- H.omega.sincos( x, c( 1*pi, 4*pi ) )
 
-xs <- SS.sim( 0.99, H, 1, 2, tau, rep(0, ncol(H)) )
+R <- diag(7, length(x))
+R.chol <- chol(R, pivot=TRUE)
+
+xs <- SS.sim.chol( 0.99, H, 1, R.chol, tau, rep(0, ncol(H)) )
 
 \dontrun{
 for(i in 1:nrow(xs$Z)) {
@@ -73,6 +77,7 @@ for(i in 1:nrow(xs$Z)) {
 	Sys.sleep(1/10)
 }
 }
+
 }
 
 

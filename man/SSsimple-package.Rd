@@ -13,8 +13,8 @@ Simulate, solve (estimate), fit state space models
 \tabular{ll}{
 Package: \tab SSsimple\cr
 Type: \tab Package\cr
-Version: \tab 0.5 \cr
-Date: \tab 2011-01-27\cr
+Version: \tab 0.6.0 \cr
+Date: \tab 2012-10-23\cr
 License: \tab GPL (>= 2) \cr
 LazyLoad: \tab yes\cr
 }
@@ -41,7 +41,7 @@ Functions whose names end in ``.tv'' provide for the usage of time-varying \code
 \author{
 Dave Zes
 
-Maintainer: Dave Zes <davezes@charter.net>
+Maintainer: Dave Zes <zesdave@gmail.com>
 }
 
 %%\references{

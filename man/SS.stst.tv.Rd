@@ -35,9 +35,9 @@ A small scalar number.
 }
 }
 
-%%\details{
-%%  ~~ If necessary, more details than the description above ~~
-%%}
+\details{
+Note:  The test for convergence has been (very, very slightly) modified since v0.5.1.  The current test has been implemented for rigor.  Users who have results based on earlier releases may observe infinitesimal differences in the resulting prediction error.
+}
 
 \value{
 A named list.

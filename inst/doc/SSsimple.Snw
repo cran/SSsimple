@@ -100,7 +100,7 @@
 \section{Intro}
 Our objective with \texttt{SSsimple} is a lean, easily implemented suite of functions to serve both didactically and as a practical means to perform meaningful analyses on real data.  Our approach here will be mostly deductive.  We will think generally about features of the state space system, and simulate and visualize the resulting manufactured observations.
 
-As an author of this sort of document there is a great temptation to pontificate on the subject matter behind the code; however, this is a tutorial, and I will keep digressions to a minimum.  There exist countless sources detailing theory, history, etc.\ of dynamic systems. For comprehensive treatments, see \citet{Sayed}; \citet{Haykin}; \citet{WestHarrison}.  For brief exposition, consider \citet{SS}; \citet{KalmanAL}.  For mean function estimation (for creation of the soon-to-be-introduced matrix, $\mb{H}$), see \citet{Wasserman}; \citet{Efrom}.
+As an author of this sort of document there is a great temptation to pontificate on the subject matter behind the code; however, this is a tutorial, and I will keep digressions to a minimum.  There exist countless sources detailing theory, history, etc.\ of dynamic systems. For comprehensive treatments, see \cite{Sayed}; \cite{Haykin}; \cite{WestHarrison}.  For brief exposition, consider \cite{SS}; \cite{KalmanAL}.  For mean function estimation (for creation of the soon-to-be-introduced matrix, $\mb{H}$), see \cite{Wasserman}; \cite{Efrom}.
 
 
 
@@ -795,7 +795,9 @@ If desiring a good quality \emph{a posteriori} estimate, do not judge a fit usin
 
 %\bibliographystyle{plainnat}
 
-\bibliographystyle{jes}
+%\bibliographystyle{jes}
+
+\bibliographystyle{abbrv}
 
 \bibliography{SSsimple}
 

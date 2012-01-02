@@ -25,13 +25,13 @@ function( F, H, Q, R, P0, epsilon, verbosity=0 ) {
 
 		
 		P.apri.temp <- F.t %*% P.apos %*% t(F.t) + Q.t
-		delta.apri <- abs(  sum( diag(P.apri) ) - sum( diag(P.apri.temp) )  )
+		delta.apri <- sum( diag(P.apri - P.apri.temp)^2  )
 		P.apri <- P.apri.temp
 		
 		K <- P.apri %*% t(H.t) %*% solve( H.t %*% P.apri %*% t(H.t) + R.t, tol=0 )
 		
 		P.apos.temp <- ( I - K %*% H.t ) %*% P.apri
-		delta.apos <- abs(  sum( diag(P.apos) ) - sum( diag(P.apos.temp) )  )
+		delta.apos <- sum( diag(P.apos - P.apos.temp)^2  )
 		P.apos <- P.apos.temp
 		
 		if( delta.apri < epsilon   &  delta.apos < epsilon ) { stst <- TRUE }
