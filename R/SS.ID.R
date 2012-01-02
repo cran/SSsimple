@@ -52,7 +52,7 @@ function( Z, d, rsN = NULL ) {
 	
 	ve.mx <- matrix(NA, n, ncol(XX.hat))
 	for(i in 1:ncol(XX.hat)) {
-		ve.mx[ , i] <- Z[ time.t+i-2, ] - H.hat %*% XX.hat[ , i ] ########### GOOD !
+		ve.mx[ , i] <- Z[ time.t+i-2, ] - H.hat %*% XX.hat[ , i ] ########### OK
 	}
 	R.hat <- var( t(ve.mx) )
 	

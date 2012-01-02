@@ -46,17 +46,17 @@ A named list.
 \item{B.apos}{A \emph{T} x \emph{d} matrix, the \emph{i}th row of which is the best state estimate given the observation at time \emph{i}.}
 }
 
-\references{
+%%\references{
 %% ~put references to the literature/web site here ~
-}
+%%}
 
-\author{
+%%\author{
 %%  ~~who you are~~
-}
+%%}
 
-\note{
+%%\note{
 %%  ~~further notes~~
-}
+%%}
 
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
@@ -65,8 +65,9 @@ A named list.
 }
 
 
-\examples{
-}
+%%\examples{
+%%
+%%}
 
 
 

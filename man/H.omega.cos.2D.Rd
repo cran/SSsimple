@@ -31,9 +31,9 @@ A vector of phase shifts on \emph{x}.  Should be same length as \code{u.x}.
 A vector of phase shifts on \emph{y}.  Should be same length as \code{u.y}.
 }
 }
-\details{
+%%\details{
 %%  ~~ If necessary, more details than the description above ~~
-}
+%%}
 \value{
 An \emph{n} x \emph{d} matrix, with \emph{d} = \code{length(u.x) * length(u.y)}.
 %%  ~Describe the value returned
@@ -42,15 +42,15 @@ An \emph{n} x \emph{d} matrix, with \emph{d} = \code{length(u.x) * length(u.y)}.
 %%  \item{comp2 }{Description of 'comp2'}
 %% ...
 }
-\references{
+%%\references{
 %% ~put references to the literature/web site here ~
-}
-\author{
+%%}
+%%\author{
 %%  ~~who you are~~
-}
-\note{
+%%}
+%%\note{
 %%  ~~further notes~~
-}
+%%}
 
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 

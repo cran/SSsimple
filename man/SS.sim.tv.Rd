@@ -43,21 +43,24 @@ A named list.
 \item{Y}{A \emph{T} x \emph{n} matrix, the \emph{i}th row of which is noiseless observation at time \emph{i}.}
 \item{Z}{A \emph{T} x \emph{n} matrix, the \emph{i}th row of which is observation at time \emph{i}.}
 }
-\references{
+
+%%\references{
 %% ~put references to the literature/web site here ~
-}
-\author{
+%%}
+%%\author{
 %%  ~~who you are~~
-}
-\note{
+%%}
+%%\note{
 %%  ~~further notes~~
-}
+%%}
 
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
-\seealso{
+%%\seealso{
 %% ~~objects to See Also as \code{\link{help}}, ~~~
-}
+%%}
+
+
 \examples{
 set.seed(9999)
 

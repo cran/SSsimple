@@ -34,32 +34,34 @@ A small scalar number.
 0, 1 or 2.
 }
 }
-\details{
+
+%%\details{
 %%  ~~ If necessary, more details than the description above ~~
-}
+%%}
+
 \value{
 A named list.
 \item{P.apri}{A \emph{d} x \emph{d} matrix giving \emph{a priori} prediction variance.}
 \item{P.apos}{A \emph{d} x \emph{d} matrix giving \emph{a posteriori} prediction variance.}
 }
 
-\references{
+%%\references{
 %% ~put references to the literature/web site here ~
-}
+%%}
 
-\author{
+%%\author{
 %%  ~~who you are~~
-}
+%%}
 
-\note{
+%%\note{
 %%  ~~further notes~~
-}
+%%}
 
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
-\seealso{
+%%\seealso{
 %% ~~objects to See Also as \code{\link{help}}, ~~~
-}
+%%}
 
 
 \examples{

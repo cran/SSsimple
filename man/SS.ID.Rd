@@ -41,19 +41,19 @@ A named list.
 Lennart Ljung.  \emph{System Identification, Theory for the User}.  Prentice Hall, 1999.
 }
 
-\author{
+%%\author{
 %%  ~~who you are~~
-}
+%%}
 
-\note{
+%%\note{
 %%  ~~further notes~~
-}
+%%}
 
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
-\seealso{
+%%\seealso{
 %% ~~objects to See Also as \code{\link{help}}, ~~~
-}
+%%}
 
 
 \examples{

@@ -54,12 +54,13 @@ A named list.
 %%  \item{comp2 }{Description of 'comp2'}
 %% ...
 }
-\references{
+
+%%\references{
 %% ~put references to the literature/web site here ~
-}
-\author{
+%%}
+%%\author{
 %%  ~~who you are~~
-}
+%%}
 
 \note{
 For a definition of the system of interest, please see \code{\link{SSsimple}}.
@@ -67,9 +68,9 @@ For a definition of the system of interest, please see \code{\link{SSsimple}}.
 
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
-\seealso{
+%%\seealso{
 %% ~~objects to See Also as \code{\link{help}}, ~~~
-}
+%%}
 
 
 \examples{

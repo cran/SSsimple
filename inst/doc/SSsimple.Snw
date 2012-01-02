@@ -92,8 +92,6 @@
 %\VignetteDepends{mvtnorm}
 %\VignetteDepends{maps}
 
-
-
 \title{Package \texttt{SSsimple}}
 \author{Dave Zes}
 \maketitle

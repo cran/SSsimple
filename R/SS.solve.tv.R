@@ -22,19 +22,21 @@ function( Z, F, H, Q, R, length.out, P0, beta0 ) {
 		F.t <- params$F ; H.t <- params$H ; Q.t <- params$Q ; R.t <- params$R
 
 		if(j == 1) {
-			B.apri[ j, ] = crossprod( t(F.t), beta0 )
+			B.apri[ j, ] = F.t %*% beta0
 			
 		} else {
-			B.apri[ j, ] = crossprod( t(F.t), B.apos[ j-1, ] )
+			B.apri[ j, ] = F.t %*% B.apos[ j-1, ]
 		}
-		Z.hat.apri[j, ] <- crossprod( t(H.t), B.apri[ j, ] )
+		Z.hat.apri[j, ] <- H.t %*% B.apri[ j, ]
 	
-		P <- F.t %*% P %*% t(F.t) + Q.t
+		P <- F.t %*% tcrossprod( P, F.t ) + Q.t
 		
-		K <- P %*% t(H.t) %*% solve( H.t %*% P %*% t(H.t) + R.t, tol=0 )
+		PtH <- tcrossprod( P, H.t )
+		
+		K <- PtH %*% solve( H.t %*% PtH + R.t, tol=0 )
 		
 		B.apos[ j, ] <- B.apri[ j, ] + K %*% ( Z[j, ] - H.t %*% B.apri[ j, ] )
-		Z.hat.apos[j, ] <- crossprod( t(H.t), B.apos[ j, ] )
+		Z.hat.apos[j, ] <- H.t %*% B.apos[ j, ]
 		
 		P <- ( I - K %*% H.t ) %*% P
 		

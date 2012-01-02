@@ -22,11 +22,11 @@ function( F, H, Q, R, length.out, beta0=0 ) {
 		eta <- t( rmvnorm( 1, rep(0, d), Q.t ) )
 		epsilon <- t( rmvnorm( 1, rep(0, n), R.t ) )
 		if( j == 1 ) {
-			Beta[ j, ] <- crossprod( t(F.t), beta0 ) + eta
+			Beta[ j, ] <- F.t %*% beta0 + eta
 		} else {
-			Beta[ j, ] <- crossprod( t(F.t), Beta[ j-1, ] ) + eta
+			Beta[ j, ] <- F.t %*% Beta[ j-1, ] + eta
 		}
-		Y[ j, ] <- crossprod( t(H.t) , Beta[ j, ] )
+		Y[ j, ] <- H.t %*% Beta[ j, ]
 		Z[ j, ] <- Y[ j, ] + epsilon
 	}
 	return( list( Beta=Beta, Y=Y, Z=Z ) )

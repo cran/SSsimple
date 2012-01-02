@@ -16,11 +16,11 @@ function( F, H, Q, R, length.out, beta0=0 ) {
 
 	for(j in 1:T) {
 		if( j == 1 ) {
-			Beta[ j, ] <- crossprod( t(F), beta0 ) + Eta[ j, ]
+			Beta[ j, ] <- F %*% beta0 + Eta[ j, ]
 		} else {
-			Beta[ j, ] <- crossprod( t(F), Beta[ j-1, ] ) + Eta[ j, ]
+			Beta[ j, ] <- F %*% Beta[ j-1, ] + Eta[ j, ]
 		}
-		Y[ j, ] <- crossprod( t(H) , Beta[ j, ] )
+		Y[ j, ] <- H %*% Beta[ j, ]
 		Z[ j, ] <- Y[ j, ] + Epsilon[ j, ]
 	}
 	return( list( Beta=Beta, Y=Y, Z=Z ) )

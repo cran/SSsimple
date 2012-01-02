@@ -16,16 +16,18 @@ function( Z, F, H, Q, R, length.out, P0, beta0=0 ) {
 	for(j in 1:T) {
 		
 		if(j == 1) {
-			B.apri[ j, ] = crossprod( t(F), beta0 )
+			B.apri[ j, ] = F %*% beta0
 
 		} else {
-			B.apri[ j, ] = crossprod( t(F), B.apos[ j-1, ] )
+			B.apri[ j, ] = F %*% B.apos[ j-1, ]
 		}
 		
 		
-		P <- F %*% P %*% t(F) + Q
+		P <- F %*% tcrossprod( P, F ) + Q
 		
-		K <- P %*% t(H) %*% solve( H %*% P %*% t(H) + R, tol=0 )
+		PtH <- tcrossprod( P, H )
+		
+		K <- PtH %*% solve( H %*% PtH + R, tol=0 )
 		
 		B.apos[ j, ] <- B.apri[ j, ] + K %*% ( Z[j, ] - H %*% B.apri[ j, ] )
 

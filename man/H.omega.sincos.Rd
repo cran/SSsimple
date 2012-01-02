@@ -19,9 +19,9 @@ A vector of locations of length \emph{n}.
 A vector of frequencies of length \emph{d}/2.
 }
 }
-\details{
+%%\details{
 %%  ~~ If necessary, more details than the description above ~~
-}
+%%}
 \value{
 An \emph{n} x \emph{d} matrix.
 %%  If it is a LIST, use
@@ -29,15 +29,16 @@ An \emph{n} x \emph{d} matrix.
 %%  \item{comp2 }{Description of 'comp2'}
 %% ...
 }
-\references{
+
+%%\references{
 %% ~put references to the literature/web site here ~
-}
-\author{
+%%}
+%%\author{
 %%  ~~who you are~~
-}
-\note{
+%%}
+%%\note{
 %%  ~~further notes~~
-}
+%%}
 
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 

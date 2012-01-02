@@ -44,21 +44,21 @@ Dave Zes
 Maintainer: Dave Zes <davezes@charter.net>
 }
 
-\references{
+%%\references{
 %% ~~ Literature or other references for background information ~~
-}
+%%}
 
 %% ~~ Optionally other standard keywords, one per line, from file KEYWORDS in ~~
 %% ~~ the R documentation directory ~~
 
 \keyword{ package }
 
-\seealso{
+%%\seealso{
 %% ~~ Optional links to other man pages, e.g. ~~
 %% ~~ \code{\link[<pkg>:<pkg>-package]{<pkg>}} ~~
 %% \code{\link[<pkg>Stem<pkg>]{<Stem>}} ~~
-}
+%%}
 
-\examples{
+%%\examples{
 %% ~~ simple examples of the most important functions ~~
-}
+%%}
