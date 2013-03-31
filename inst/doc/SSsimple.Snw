@@ -444,10 +444,9 @@ library(maps)
 
 <<a14, eval=TRUE>>=
 ## library(maps)
-locs <- read.table( "http://www.stat.ucla.edu/~davezes/code_and_data/locs.tsv", 
-   sep="\t", stringsAsFactors=FALSE )
-Z <- read.table( "http://www.stat.ucla.edu/~davezes/code_and_data/O3.tsv", 
-   sep="\t", stringsAsFactors=FALSE )
+data(SS_O3) #### two dataframes, Z and locs
+Z <- SS_O3$Z
+locs <- SS_O3$locs
 xdate <- row.names(Z)
 x <- locs[ ,1]
 y <- locs[ ,2]
@@ -684,10 +683,9 @@ The RMSE is $10.42$.  Of course, when we ID the system, we find the observation 
 Let's examine a few more examples with the O3 data.  Load and construct Euclidean distance matrix:
 %
 <<a25, eval=TRUE>>=
-locs <- read.table( "http://www.stat.ucla.edu/~davezes/code_and_data/locs.tsv", 
-   sep="\t", stringsAsFactors=FALSE )
-Z <- read.table( "http://www.stat.ucla.edu/~davezes/code_and_data/O3.tsv", 
-   sep="\t", stringsAsFactors=FALSE )
+data(SS_O3) #### two dataframes, Z and locs
+Z <- SS_O3$Z
+locs <- SS_O3$locs
 xdate <- row.names(Z)
 x <- locs[ ,1]
 y <- locs[ ,2]

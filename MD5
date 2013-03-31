@@ -1,4 +1,4 @@
-cdfe1fb8e35912344331b8d6278d8367 *DESCRIPTION
+a5c6ce9fbd74c9b7b663bda3d2f358bb *DESCRIPTION
 f35991a8f622053178e39e767dd5752a *NAMESPACE
 8930bdfcc633dde6e714732f91b3020e *R/H.omega.cos.2D.R
 b345abefbaa6fe9ef826292291af7ccb *R/H.omega.sincos.R
@@ -13,10 +13,10 @@ bb87fad7b7012024080443a3842257c2 *R/SS.stst.R
 10444794a7aeba39cc7451e85b8179e6 *R/SS.stst.SMW.R
 285822837be5629776d94210c52c8946 *R/SS.stst.tv.R
 dde5b5282ccfafba62bcdd8a4d87e643 *R/SSsimple-internal.R
-d9d3cdc14180627216c1bb078be3ba4c *__dz/Sweave.sty
-bbc46bb6d49983c5f917aadbac472c30 *inst/doc/SSsimple.Snw
+a9330522915bb972bf8b6b71de7bb1e1 *data/SS_O3.RData
+ca0a9b045cdfa506da271dfe2f8c9077 *inst/doc/SSsimple.Snw
 89a0f577d319d966c9a57902dc77d851 *inst/doc/SSsimple.bib
-767664da38dc3f9cac0c90d2a681f510 *inst/doc/SSsimple.pdf
+5f6bb63d8a991586fbb76a45fb89affe *inst/doc/SSsimple.pdf
 48669c4e55fe2392469dcf01641c5c06 *inst/doc/jes.bst
 7a4b30f198aaf7accac0cef5c8cde4da *man/H.omega.cos.2D.Rd
 1f0d281cb28c233921aa8401000941e2 *man/H.omega.sincos.Rd
@@ -30,5 +30,6 @@ def21e508e0a318ac441c8545e03a513 *man/SS.solve.SMW.Rd
 6373a9b35802ab954e010aee684f1a07 *man/SS.stst.Rd
 3e3ec7e9e301c1511b82491cdde34b17 *man/SS.stst.SMW.Rd
 06c090c030723a2d3146c00b83bd618d *man/SS.stst.tv.Rd
+f11a1539312c6cdd0a89d88d4f76ae47 *man/SS_O3.Rd
 c6a22a12c57cf7247f7045816b8789e4 *man/SSsimple-internal.Rd
-f441569de8a7987af45936ecc96422d1 *man/SSsimple-package.Rd
+55dd7a051991ba78b3c9d22611a58d32 *man/SSsimple-package.Rd
