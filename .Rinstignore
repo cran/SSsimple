@@ -1,2 +1,2 @@
-inst/doc/jes.bst
-inst/doc/Sweave.sty
+vignettes/jes.bst
+vignettes/Sweave.sty

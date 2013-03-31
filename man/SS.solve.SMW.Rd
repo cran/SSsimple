@@ -5,7 +5,7 @@
 Optimal Estimation
 }
 \description{
-Solve a state space system using the Kalman Filter
+Solve a state space system using the Kalman Filter.
 }
 \usage{
 SS.solve.SMW(Z, F, H, Q, inv.R, length.out, P0, beta0=0)

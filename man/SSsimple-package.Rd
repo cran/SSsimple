@@ -13,8 +13,8 @@ Simulate, solve (estimate), fit state space models
 \tabular{ll}{
 Package: \tab SSsimple\cr
 Type: \tab Package\cr
-Version: \tab 0.6.1 \cr
-Date: \tab 2013-03-31\cr
+Version: \tab 0.6.2 \cr
+Date: \tab 2013-12-10\cr
 License: \tab GPL (>= 2) \cr
 LazyLoad: \tab yes\cr
 }
