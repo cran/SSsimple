@@ -1,5 +1,5 @@
-ae39c0b432b630b7f1a1c2e0ee384d06 *DESCRIPTION
-f35991a8f622053178e39e767dd5752a *NAMESPACE
+590e7743b70b79f0998676b2db930546 *DESCRIPTION
+950de1ad967b04fec8b7430371eed75f *NAMESPACE
 8930bdfcc633dde6e714732f91b3020e *R/H.omega.cos.2D.R
 b345abefbaa6fe9ef826292291af7ccb *R/H.omega.sincos.R
 8f9f8f6bbbd4c2c00b27114f6b523b86 *R/SS.ID.R
@@ -13,11 +13,11 @@ bb87fad7b7012024080443a3842257c2 *R/SS.stst.R
 10444794a7aeba39cc7451e85b8179e6 *R/SS.stst.SMW.R
 285822837be5629776d94210c52c8946 *R/SS.stst.tv.R
 dde5b5282ccfafba62bcdd8a4d87e643 *R/SSsimple-internal.R
-7c3277d865a49f5b9467494286d252ab *build/vignette.rds
+bd3f2c407d7515dbcfe8faaf8fca6749 *build/vignette.rds
 a9330522915bb972bf8b6b71de7bb1e1 *data/SS_O3.RData
 cc3d14feba14fb421f9a4a84324435ee *inst/doc/SSsimple.R
 6f5de62c2fc42c0b6848eec8b77393f1 *inst/doc/SSsimple.Snw
-7489da2cc624da647cb4e866013c2820 *inst/doc/SSsimple.pdf
+be4cb05b3e0d909d928de5c373ae60a7 *inst/doc/SSsimple.pdf
 7a4b30f198aaf7accac0cef5c8cde4da *man/H.omega.cos.2D.Rd
 1f0d281cb28c233921aa8401000941e2 *man/H.omega.sincos.Rd
 a4be3cc1b79e0a6160144bf2890546ad *man/SS.ID.Rd
@@ -32,7 +32,7 @@ d13e50d08435d418ba148cc1a9615267 *man/SS.sim.chol.Rd
 06c090c030723a2d3146c00b83bd618d *man/SS.stst.tv.Rd
 f11a1539312c6cdd0a89d88d4f76ae47 *man/SS_O3.Rd
 c6a22a12c57cf7247f7045816b8789e4 *man/SSsimple-internal.Rd
-cd5c424c5a0f9c6656ea10f1ea4b179b *man/SSsimple-package.Rd
+eefb0b8939c539dfafa46857364da9ab *man/SSsimple-package.Rd
 6f5de62c2fc42c0b6848eec8b77393f1 *vignettes/SSsimple.Snw
 89a0f577d319d966c9a57902dc77d851 *vignettes/SSsimple.bib
 48669c4e55fe2392469dcf01641c5c06 *vignettes/jes.bst
