@@ -1,2 +1,5 @@
-exportPattern("^[^\\.]")
-importFrom("mvtnorm", rmvnorm)
+exportPattern("^[[:alpha:]]+")
+importFrom("mvtnorm", "rmvnorm")
+importFrom("stats", "rnorm", "var")
+importFrom("methods", "is")
+
